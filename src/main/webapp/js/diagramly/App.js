@@ -13,6 +13,8 @@
  */
 App = function(editor, container, lightbox)
 {
+  console.log('这是自定义输出');
+
 	EditorUi.call(this, editor, container, (lightbox != null) ? lightbox :
 		(urlParams['lightbox'] == '1' || (uiTheme == 'min' &&
 		urlParams['chrome'] != '0')));
@@ -3659,6 +3661,17 @@ App.prototype.showSplash = function(force)
 			this.showSplash();
 		}));
 	}
+  /**
+   * 如果有id，表示打开了一个存在的文档，进入编辑模式
+   */
+  else if (urlParams['id']) {
+    const mockFile = {
+      title: 'test.drawio',
+      data: '<mxfile host="localhost" modified="2022-05-25T13:31:06.928Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36" etag="sxxrjYa5OG2wfEiznSmZ" version="@DRAWIO-VERSION@" type="device"><diagram id="_qnzdKkgiU8tfmMwlib-" name="Page-1">jZJNb4MwDIZ/DcdJhHS0Ow7afWhaL2jadpoy4pJIgaA0FNivXxgOFFWVdonixx+JXzugadk9GlaLV81BBVHIu4BugyhahdSdA+hHcLu5G0FhJB8RmUEmfwBhiLSRHI6LQKu1srJewlxXFeR2wZgxul2GHbRavlqzAi5AljN1Sd8lt2Kkm2g98yeQhfAvkxj7K5kPxk6OgnHdniG6C2hqtLbjrexSUIN2Xpcx7+GKd/qYgcr+JyHZn76yfvV5eCOx2W+/Xz6e0xuscmKqwYbvkxT/a3svgtFNxWGoEwY0aYW0kNUsH7ytm7pjwpbKWcRdsSIYC93Vr5JJALc4oEuwpnchPiFGzXBpyBrtdh4B8bqKM/l9HsOpF1PpWRh3QW28Oc/gz3e2yHT3Cw==</diagram></mxfile>'
+    }
+    const file = new LocalFile(this, mockFile.data, mockFile.title, this.mode);
+    this.loadFile(`-1`, true, file);
+  }
 	else if (!mxClient.IS_CHROMEAPP && (this.mode == null || force))
 	{
 		var rowLimit = (serviceCount == 4) ? 2 : 3;
@@ -6140,6 +6153,7 @@ App.prototype.showNotification = function(notifs, lsReadFlag)
 App.prototype.save = function(name, done)
 {
 	var file = this.getCurrentFile();
+  console.log('file => ', file);
 	
 	if (file != null && this.spinner.spin(document.body, mxResources.get('saving')))
 	{
